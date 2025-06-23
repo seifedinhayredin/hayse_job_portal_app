@@ -60,11 +60,7 @@ export const JobsRegistrForm = () => {
 
   }
 
-  const fetchJob = async() =>{
-    const response = await axios('/api/jobdisplay');
-    setFormData(response.data.jobs)
-
-  }
+  
   return (
     <div>
       <ToastContainer theme="dark"/>

@@ -49,8 +49,20 @@ if(password != confirmpassword){
   return;
 }
 
+
+
 try {
-  
+  const {email} = formData;
+  const userExistResponse = await axios.post('/api/userExist',{email});
+  const { exists } = userExistResponse.data;
+ 
+   if (exists) {
+    setError("User is already exists");
+    return;
+  }
+
+
+
 
 const response = await axios.post('/api/register',formData)
 toast.success(response.data.msg);
@@ -124,12 +136,13 @@ setFormData({firstname:"",
             />
 
             <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-            <input 
-            className="mt-1 block w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            type="text" name="role" id="role" placeholder='Enter your role'
-            value={formData.role}
-            onChange={handleChange}
-            />
+            
+            <select name="role" id="role" onChange={handleChange}
+             className="mt-1 block w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <option value="">--Select--</option>
+              <option value="user">User</option>
+              <option value="client">Client</option>
+            </select>
 
             <button type='submit'
             className="w-full bg-blue-600 text-white py-2 px-4 round hover:bg-blue-700 transition"
