@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Footer from "@/component/Footer";
-import LoginPage from "@/component/LoginPageForm";
+import { ImageUploadForm } from "@/component/ImageUploadForm";
+
 
 
 const hoverMessages: Record<string, string> = {
@@ -95,8 +96,9 @@ export default function Home() {
       <div className="bg-gradient-to-br from-blue-50 to-white px-4 mt-20">
         <Footer />
 
-        <LoginPage />
+    
       </div>
+      <ImageUploadForm />
     </>
   );
 }

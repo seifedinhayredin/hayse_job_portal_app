@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
  export default function RegisterForm() {
 
@@ -17,6 +18,8 @@ import { ToastContainer, toast } from 'react-toastify';
 
   const [error, setError] = useState("")
 
+  const router = useRouter();
+
   const handleChange = (e:any) =>{
     const name = e.target.name;
     const value = e.target.value;
@@ -29,7 +32,7 @@ import { ToastContainer, toast } from 'react-toastify';
     }
   )
 }
-console.log(formData)
+//console.log(formData)
 
 
 
@@ -65,8 +68,11 @@ try {
 
 
 const response = await axios.post('/api/register',formData)
+
 toast.success(response.data.msg);
-setError("")
+setError("");
+
+
 setFormData({firstname:"",
     middlename:"",
     lastname:"",
@@ -74,6 +80,9 @@ setFormData({firstname:"",
     password:"",
     confirmpassword:"",
     role:"",})
+
+    router.replace("/login");
+
 } catch (error) {
   toast.error('Error')
   console.log("Error occured while registering user ",error)

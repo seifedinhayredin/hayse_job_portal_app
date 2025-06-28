@@ -3,6 +3,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import CountUp from 'react-countup';
 import JobAnalyticsGraph from './JobAnalyticsGraph';
+import { useSession } from 'next-auth/react';
 
 
 const StatsCard = ({ title, count, color }: { title: string; count: number; color: string }) => (
@@ -20,6 +21,7 @@ const StatsCard = ({ title, count, color }: { title: string; count: number; colo
  const Dashboard = () => {
     const[jobData,setJobData] = useState<number>(0);
     const[userData,setUserData] = useState<number>(0);
+    const{data:session} = useSession();
  
      const allDataAnalytics = async() =>{
         try {
@@ -42,6 +44,7 @@ const StatsCard = ({ title, count, color }: { title: string; count: number; colo
 
   return (
     <div>
+       <div>Welcome: {`${session?.user?.firstname} ${session?.user?.lastname}`}</div>
             <div className="flex flex-wrap justify-center gap-6 my-6">
                 <StatsCard title="Jobs" count={jobData} color="bg-blue-600" />
                 <StatsCard title="Users" count={userData} color="bg-green-600" />
