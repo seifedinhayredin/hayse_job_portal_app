@@ -1,6 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
 const jobSchema = new Schema({
+    employerName:{
+        type:String,
+        require:true
+    },
     jobname:{
         type:String,
         require:true
@@ -17,9 +21,23 @@ const jobSchema = new Schema({
         type:String,
         require:true
     },
+    address: { 
+        type: String, 
+        required: true 
+    },
+
     description:{
         type:String,
         require:true
+    },
+    deadline:{
+        type:Date,
+        require:true
+    },
+    employerId: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // Reference to the user who posted the job
+      required: true,
     },
 },{timestamps:true});
 

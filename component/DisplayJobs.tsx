@@ -3,13 +3,19 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import LoadJob from './LoadJob'
+import {ToastContainer, toast } from 'react-toastify'
 
 interface Item{
+   employerName:string;
     jobname:string;
     qualification:string;
     experiance:string;
     status:string;
+    address:string;
     description:string;
+    deadline:Date;
+    postedAt:Date;
+    createdAt:Date;
     id:number;
     _id:string;
      mongoId: string;
@@ -35,8 +41,23 @@ const DisplayJobs = () => {
  
   //console.log("jobData",jobData);
  
-  const applyJob = (ids:any) => {
-      console.log("Applied");
+  const applyJob = async(ids:any) => {
+    const confirmed = window.confirm("Are you sure you want to apply to this job?");
+      if (!confirmed) return;
+
+
+    const applied = await axios.post("api/applyToJob",{
+      jobId:ids
+    })
+    if(applied)
+    {
+      toast.success("Successfully Applied");
+       console.log("Applied: ",ids);
+    }
+    else{
+      toast.error("Error when applying to Job");
+    }
+     
   }
 
   const handleFormChange = (e:any) => {
@@ -99,6 +120,8 @@ const filterJobs = async (e: any) => {
 
   return (
 <div>
+   <ToastContainer theme="dark"/>
+  <div>
                         <form
                   className="flex flex-wrap sm:flex-nowrap items-center gap-3 bg-white p-4 rounded-xl shadow-md w-full max-w-2xl mx-auto my-6"
                   onSubmit={searchJobs}
@@ -146,11 +169,16 @@ const filterJobs = async (e: any) => {
             
                 jobData.map((item,index) => {
                     
-                    return <LoadJob key={index} id = {index}  _id={item._id} jobname = {item.jobname} qualification = {item.qualification} experiance = {item.experiance} status = {item.status} description = {item.description} mongoId = {item._id} applyJob ={applyJob}/>
+                    return <LoadJob key={index} id = {index}  _id={item._id} 
+                  employerName = {item.employerName}  jobname = {item.jobname} qualification = {item.qualification} 
+                     experiance = {item.experiance} status = {item.status} 
+                    address = {item.address} description = {item.description}
+                      deadline = {item.deadline} postedAt={item.createdAt}
+                       mongoId = {item._id} applyJob ={applyJob}/>
                 }
                 )
             }
-    
+    </div>
 </div>
   )
 }

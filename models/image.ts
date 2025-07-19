@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const imageSchema = new Schema({
     image_url:String,
     public_id:String,
+    email:String
 },{
     timestamps:true
 });

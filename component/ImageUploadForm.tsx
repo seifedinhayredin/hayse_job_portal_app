@@ -12,7 +12,7 @@ export const ImageUploadForm = () => {
 
     }
 
-   // console.log("Image: ",image);
+    console.log("Image: ",image);
 
    const onSubmitHandler = () => {
        if(!image){

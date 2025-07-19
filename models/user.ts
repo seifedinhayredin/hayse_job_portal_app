@@ -27,6 +27,15 @@ const userSchema = new Schema({
         type:String,
         require:true
     },
+    image_url:{
+        type:String,
+        default:""
+    },
+    public_id:{
+        type:String,
+        default:""
+    },
+    
 },{
         timestamps:true
     })

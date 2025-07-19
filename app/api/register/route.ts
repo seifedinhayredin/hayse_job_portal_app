@@ -6,12 +6,12 @@ import bcrypt from 'bcrypt';
 export async function POST(res:any) {
     try {
         
-    const {firstname,middlename,lastname,email,password,confirmpassword,role} = await res.json();
-
+    const {firstname,middlename,lastname,email,password,confirmpassword,role,image_url,public_id} = await res.json();
+     
     const hashedPassword = await bcrypt.hash(password,10);
       await connectDB();
 
-    await User.create({firstname,middlename,lastname,email,password:hashedPassword,role})
+    await User.create({firstname,middlename,lastname,email,password:hashedPassword,role,image_url,public_id})
     return  NextResponse.json({msg:"User Registered"})
     
     } catch (error) {

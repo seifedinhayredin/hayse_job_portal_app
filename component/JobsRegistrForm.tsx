@@ -6,11 +6,14 @@ import {ToastContainer, toast } from 'react-toastify'
 export const JobsRegistrForm = () => {
 
   const[formData,setFormData] =useState({
+    employerName:"",
     jobname:"",
     qualification:"",
     experiance:"",
     status:"",
-    description:""
+    address:"",
+    description:"",
+    deadline:""
 
   })
   const [error,setError] = useState("")
@@ -45,11 +48,14 @@ export const JobsRegistrForm = () => {
          
          if(response){
           toast.success(response.data.msg);
-          setFormData({jobname:"",
+          setFormData({employerName:"",
+                   jobname:"",
                     qualification:"",
                     experiance:"",
                     status:"",
-                    description:""})
+                    address:"",
+                    description:"",
+                    deadline:""})
          };
          setError("");
          
@@ -66,6 +72,15 @@ export const JobsRegistrForm = () => {
       <ToastContainer theme="dark"/>
         <div className="min-h-screen flex items-center justify-center bg-gray-300 mt-4">
         <form className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-6" onSubmit={handleSubmit}>
+           
+            <label htmlFor="employerName" className="block text-sm font-medium text-gray-700">Employer Name</label>
+            <input 
+            className="mt-1 block w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            type="text" name = "employerName" id='employerName' placeholder='Enter name of the Employer'
+            value={formData.employerName}
+            onChange={handleChange}
+            />
+           
             <label htmlFor="jobname" className="block text-sm font-medium text-gray-700">Job Name</label>
             <input 
             className="mt-1 block w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -111,6 +126,14 @@ export const JobsRegistrForm = () => {
               
                     </label>
 
+                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">Job Name</label>
+            <input 
+            className="mt-1 block w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            type="text" name = "address" id='address' placeholder='Enter address of the job'
+            value={formData.address}
+            onChange={handleChange}
+            />
+
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mt-1">Job Description</label>
            
             <textarea name="description" id="description"
@@ -118,6 +141,15 @@ export const JobsRegistrForm = () => {
             value={formData.description}
             onChange={handleChange}
             ></textarea>
+
+   <label htmlFor="deadline" className="block text-sm font-medium text-gray-700">Deadline</label>
+            <input 
+            className="mt-1 block w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            type="date" name = "deadline" id='deadline' 
+            value={formData.deadline}
+            onChange={handleChange}
+            />
+
 
             <button type='submit'
             className="w-full bg-blue-600 text-white py-2 px-4 round hover:bg-blue-700 transition"
