@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 export async function POST(req:any) {
     const session = await getServerSession(authOptions);
     const email = session?.user?.email;
-    console.log("Email in checking application: ",email);
+    
     
     const currentUserId = await User.findOne({email}).select("_id");
 
@@ -21,11 +21,11 @@ export async function POST(req:any) {
          applicantId: currentUserId,
     })
         if (checkApplication){
-            console.log("You are already applied")
+            
               return NextResponse.json({checkApplication:false})
         }
         else{
-            console.log("You can apply to job")
+            
             return NextResponse.json({checkApplication:true})
         }
 

@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import Footer from "@/component/Footer";
 import { ImageUploadForm } from "@/component/ImageUploadForm";
+import { DisplayAppliedEmployee } from "@/component/DisplayAppliedEmployee";
 
 
 
@@ -99,6 +100,8 @@ export default function Home() {
     
       </div>
       <ImageUploadForm />
+
+      <DisplayAppliedEmployee />
     </>
   );
 }

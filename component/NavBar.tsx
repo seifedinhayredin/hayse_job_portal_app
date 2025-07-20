@@ -58,7 +58,9 @@ export const NavBar = () => {
           <li><Link href="/analytics"><span className="hover:text-blue-600">Analytics</span></Link></li>
           <li><Link href="/jobboard"><span className="hover:text-blue-600">Jobs</span></Link></li>
           <li><Link href="/registerjob"><span className="hover:text-blue-600">Companies</span></Link></li>
-          
+          {!hideSignOut && (
+            <li><Link href="/showApplicants"><span className="hover:text-blue-600">Show Applications</span></Link></li>
+          )}
           {!hideSignOut ? (
             <li>
               <button
@@ -123,6 +125,9 @@ export const NavBar = () => {
           <li><Link href="/analytics" onClick={toggleMenu}><span className="hover:text-blue-600">Analytics</span></Link></li>
           <li><Link href="/jobboard" onClick={toggleMenu}><span className="hover:text-blue-600">Jobs</span></Link></li>
           <li><Link href="/registerjob" onClick={toggleMenu}><span className="hover:text-blue-600">Companies</span></Link></li>
+          {!hideSignOut && (
+            <li><Link href="/showApplicants" onClick={toggleMenu}><span className="hover:text-blue-600">Show Applications</span></Link></li>
+          )}
            {!hideSignOut ? (
             <li>
               <button
@@ -137,15 +142,41 @@ export const NavBar = () => {
           <li><Link href="/login" onClick={toggleMenu}><span className="hover:text-blue-600">Login</span> </Link></li>
          }
 
-          {
-              !hideSessionName && (
-                <li>
-                  <div>
-                    {`${capitalize(session?.user?.firstname)} ${capitalize(session?.user?.lastname)}`}
-                  </div>
-                </li>
-              )
-            }
+          {!hideSessionName && session?.user && (
+ <li>
+  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+    {/* Profile Image or Initial */}
+    {image?.image_url?.trim() ? (
+      <Image
+        src={image.image_url}
+        alt="User image"
+        width={40}
+        height={40}
+        className="rounded-full object-cover w-10 h-10"
+      />
+    ) : (
+      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white text-sm font-semibold">
+        {session.user.firstname?.charAt(0).toUpperCase() || 'U'}
+      </div>
+    )}
+
+    {/* Name and Upload Link */}
+    <div className="text-center sm:text-left">
+      <span className="text-sm font-medium text-gray-800 block">
+        {capitalize(session.user.firstname)} {capitalize(session.user.lastname)}
+      </span>
+
+      {!hideSignOut && !image?.image_url?.trim() && (
+        <Link href="/upload-profile-picture">
+          <span className="text-xs text-blue-600 hover:underline">Upload Photo</span>
+        </Link>
+      )}
+    </div>
+  </div>
+</li>
+          )
+}
+
         </ul>
       )}
     </nav>
