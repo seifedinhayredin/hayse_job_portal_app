@@ -34,7 +34,11 @@ export async function POST(request:Request) {
                 email:email
             })
 
-            //await User.findOneAndUpdate({email},{ $set: { image_url: imageUrl } } )
+            await User.findOneAndUpdate({email},{ $set: {
+                 image_url: uploadResult.secure_url,
+                 public_id:uploadResult.public_id
+
+             } } )
         }
         return Response.json({message:"Image Uploaded Sucessfully"});
         

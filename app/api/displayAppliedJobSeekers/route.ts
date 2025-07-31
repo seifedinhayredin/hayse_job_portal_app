@@ -36,7 +36,7 @@ export async function POST(req: any) {
       jobId: { $in: jobIds },
     })
       .populate("applicantId", "firstname lastname email applicantId")
-      .populate("jobId", "jobname jobId");
+      .populate("jobId", "jobname jobId employerName");
 
     // Step 4: Add applicant image from ImageCollection using email
     const applicationsWithImages = await Promise.all(
@@ -54,6 +54,7 @@ export async function POST(req: any) {
         return {
           jobname: app.jobId?.jobname || "Unknown Job",
           jobId:app.jobId,
+          employerName:app.jobId?.employerName,
           
 
           applicant: {

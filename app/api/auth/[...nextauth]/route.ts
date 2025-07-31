@@ -1,17 +1,18 @@
 import { connectDB } from "@/lib/db";
 import User from "@/models/user";
-import NextAuth from "next-auth/next";
+import NextAuth, { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import { JWT } from "next-auth/jwt";
 
-export const authOptions: any = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {},
 
-      async authorize(credentials: any) {
-        const { email, password } = credentials;
+      async authorize(credentials) {
+        const { email, password } = credentials as { email: string; password: string };
 
         try {
           await connectDB();
@@ -19,9 +20,10 @@ export const authOptions: any = {
 
           if (!user) return null;
 
-          const comparePassword = await bcrypt.compare(password, user.password);
-          if (!comparePassword) return null;
+          const isPasswordCorrect = await bcrypt.compare(password, user.password);
+          if (!isPasswordCorrect) return null;
 
+          // ✅ Return the custom user fields
           return {
             id: user._id.toString(),
             email: user.email,
@@ -37,6 +39,7 @@ export const authOptions: any = {
       },
     }),
   ],
+
   session: {
     strategy: "jwt",
   },
@@ -46,9 +49,10 @@ export const authOptions: any = {
   },
 
   callbacks: {
-    async jwt({ token, user }: any) {
-      // Add custom user fields to token
+    // ✅ Add custom fields to the token
+    async jwt({ token, user }: { token: JWT; user?: any }) {
       if (user) {
+        token.id = user.id;
         token.firstname = user.firstname;
         token.lastname = user.lastname;
         token.role = user.role;
@@ -56,12 +60,13 @@ export const authOptions: any = {
       return token;
     },
 
-    async session({ session, token }: any) {
-      // Pass custom fields into session object
-      if (token) {
-        session.user.firstname = token.firstname;
-        session.user.lastname = token.lastname;
-        session.user.role = token.role;
+    // ✅ Pass custom fields to session
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.firstname = token.firstname as string;
+        session.user.lastname = token.lastname as string;
+        session.user.role = token.role as string;
       }
       return session;
     },

@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import LoadJob from './LoadJob'
 import {ToastContainer, toast } from 'react-toastify'
+import { useSession } from 'next-auth/react'
 
 interface Item{
    employerName:string;
@@ -19,6 +20,7 @@ interface Item{
     id:number;
     _id:string;
      mongoId: string;
+     employerId:string;
 }
 
 const DisplayJobs = () => {
@@ -26,7 +28,10 @@ const DisplayJobs = () => {
     search:"",
     experiance:""});
     const[jobData,setjobData] =useState<Item[]>([]);
+    const {data:session} = useSession();
     const[error,setError] = useState("");
+
+    const loggedInUserId = session?.user?.id;
 
     const fetchJob = async() =>{
     const response = await axios('/api/jobsdisplay');
@@ -167,7 +172,8 @@ const filterJobs = async (e: any) => {
 
            {
             
-                jobData.map((item,index) => {
+                jobData.filter((item) => item.employerId !== loggedInUserId)
+                .map((item,index) => {
                     
                     return <LoadJob key={index} id = {index}  _id={item._id} 
                   employerName = {item.employerName}  jobname = {item.jobname} qualification = {item.qualification} 

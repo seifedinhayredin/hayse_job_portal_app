@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { Briefcase, User, Mail } from "lucide-react";
 import Image from "next/image";
 import { groupByJob } from "@/utils/groupByJob";
@@ -9,6 +10,9 @@ export const DisplayAppliedEmployee = () => {
   const [employeeData, setEmployeeData] = useState([]);
   const [hasFetched, setHasFetched] = useState(false);
   const [statusMap, setStatusMap] = useState<Record<string, string>>({});
+  const { data: session } = useSession();
+
+  const loggedInEmployerId = session?.user?.id;
 
   const fetchJobsForEmployeers = async () => {
     const response = await axios.post("api/displayAppliedJobSeekers");
@@ -38,6 +42,9 @@ export const DisplayAppliedEmployee = () => {
   const handleStatusChange = async (
     applicantId: string,
     jobId: string,
+    jobname:string,
+    employerName:string,
+    email:string,
     status: "accepted" | "reviewed" | "rejected"
   ) => {
     const confirmed = window.confirm(`Are you sure you want to ${status.slice(0,-2)} application?`)
@@ -55,6 +62,9 @@ export const DisplayAppliedEmployee = () => {
         ...prev,
         [`${applicantId}_${jobId}`]: status,
       }));
+
+      sendAcceptanceEmail(email,jobname,employerName,status);
+
     } catch (err) {
       console.error("Failed to update status", err);
     }
@@ -69,6 +79,31 @@ export const DisplayAppliedEmployee = () => {
   }, [employeeData]);
 
   const groupedData = groupByJob(employeeData);
+
+  const sendAcceptanceEmail = async (toEmail: string, jobname: string,employerName:string,status:string) => {
+            await fetch('/api/sendAcceptanceEmail', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ toEmail, jobname,employerName,status }),
+            });
+        };
+  // ✅ Function to Start Chat
+  const handleChat = async (applicantId: string) => {
+    try {
+      const res = await axios.post("/api/chat/conversations", {
+        user1: loggedInEmployerId,
+        user2: applicantId,
+      });
+
+      const conversation = res.data;
+      window.location.href = `/chat/${conversation._id}`; // ✅ Redirect to chat page
+    } catch (err) {
+      console.error("Error starting chat:", err);
+    }
+  };
+
 
   return (
     <div className="p-4 space-y-6 max-w-4xl mx-auto">
@@ -91,6 +126,7 @@ export const DisplayAppliedEmployee = () => {
             {applicants.map((data: any, index: number) => {
               const applicantId = data.applicant?.applicantId;
               const jobId = data.jobId?._id;
+              const employerName = data.jobId?.employerName;
               const statusKey = `${applicantId}_${jobId}`;
               const status = statusMap[statusKey];
 
@@ -137,7 +173,7 @@ export const DisplayAppliedEmployee = () => {
                       <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4">
                         <button
                           onClick={() =>
-                            handleStatusChange(applicantId, jobId, "accepted")
+                            handleStatusChange(applicantId, jobId,jobname,employerName, data.applicant?.email,"accepted")
                           }
                           className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                         >
@@ -146,7 +182,7 @@ export const DisplayAppliedEmployee = () => {
 
                         <button
                           onClick={() =>
-                            handleStatusChange(applicantId, jobId, "reviewed")
+                            handleStatusChange(applicantId, jobId,jobname,employerName, data.applicant?.email,"reviewed")
                           }
                           className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
                         >
@@ -155,12 +191,14 @@ export const DisplayAppliedEmployee = () => {
 
                         <button
                           onClick={() =>
-                            handleStatusChange(applicantId, jobId, "rejected")
+                            handleStatusChange(applicantId, jobId,jobname,employerName,data.applicant?.email, "rejected")
                           }
                           className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                         >
                           ❌ Reject
                         </button>
+
+                         
                       </div>
                     )}
 
@@ -169,6 +207,13 @@ export const DisplayAppliedEmployee = () => {
                         Status: {status.charAt(0).toUpperCase() + status.slice(1)}
                       </div>
                     )}
+                    {/* ✅ Chat Button */}
+                      <button
+                        onClick={() => handleChat(applicantId)}
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                      >
+                        💬 Chat
+                      </button>
                   </div>
                 </div>
               );

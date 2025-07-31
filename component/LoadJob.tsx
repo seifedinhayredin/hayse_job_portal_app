@@ -33,6 +33,7 @@ const LoadJob: React.FC<componentProps> = ({
 }) => {
   const [hasApplied, setHasApplied] = useState(false);
   const [statusOfApplication, setStatusOfApplication] = useState("");
+  const [expanded, setExpanded] = useState(false); // ✅ For See more/less
 
   const isClosed = new Date() > new Date(deadline);
 
@@ -51,11 +52,14 @@ const LoadJob: React.FC<componentProps> = ({
   const handleApply = async () => {
     try {
       await applyJob(mongoId);
-      await fetchStatus(); // refresh status instantly
+      await fetchStatus();
     } catch (err) {
       console.error("Error applying:", err);
     }
   };
+
+  const shortText =
+    description.length > 120 ? description.slice(0, 120) + "..." : description;
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-3xl mx-auto mb-6 hover:shadow-lg transition-shadow duration-300">
@@ -97,16 +101,27 @@ const LoadJob: React.FC<componentProps> = ({
         {new Date(postedAt).toLocaleDateString()}
       </div>
 
+      {/* ✅ Description with See More */}
       <p className="font-medium mt-4">Job Description:</p>
-      <p className="text-gray-700 text-sm">{description}</p>
+      <p className="text-gray-700 text-sm">
+        {expanded ? description : shortText}
+        {description.length > 120 && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="ml-2 text-blue-600 hover:underline text-sm"
+          >
+            {expanded ? "See less" : "See more"}
+          </button>
+        )}
+      </p>
 
       {/* Bottom Section */}
       <div
         className={`flex justify-between items-center mt-4 ${
-          hasApplied ? "border-t pt-4" : "" // only show line if applied
+          hasApplied ? "border-t pt-4" : ""
         }`}
       >
-        {/* Status Badge - show only when applied */}
+        {/* Status Badge */}
         {hasApplied && (
           <span
             className={`inline-block px-3 py-1 rounded-full text-sm font-semibold capitalize ${
@@ -123,7 +138,7 @@ const LoadJob: React.FC<componentProps> = ({
           </span>
         )}
 
-        {/* Button Always on Right */}
+        {/* Button */}
         <div className="ml-auto">
           {isClosed ? (
             <button

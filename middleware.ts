@@ -1,3 +1,3 @@
 export {default} from "next-auth/middleware"
 
-export const config = {matcher:["/jobboard","/registerjob","/analytics","/showApplicants"]}
+export const config = {matcher:["/jobboard","/registerjob","/analytics","/showApplicants","/chat","/showYourAppliedJobs","/displayAllUsers"]}

@@ -8,8 +8,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Footer from "@/component/Footer";
-import { ImageUploadForm } from "@/component/ImageUploadForm";
-import { DisplayAppliedEmployee } from "@/component/DisplayAppliedEmployee";
+import LoadYourPostedJobs from "@/component/LoadYourPostedJobs";
+
 
 
 
@@ -97,11 +97,10 @@ export default function Home() {
       <div className="bg-gradient-to-br from-blue-50 to-white px-4 mt-20">
         <Footer />
 
+     <LoadYourPostedJobs />
     
       </div>
-      <ImageUploadForm />
-
-      <DisplayAppliedEmployee />
+      
     </>
   );
 }
