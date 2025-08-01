@@ -1,15 +1,16 @@
 import { connectDB } from "@/lib/db";
 import Conversation from "@/models/conversation";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
     await connectDB();
 
-    const conversation = await Conversation.findById(params.id);
+    const { id } = context.params;
+    const conversation = await Conversation.findById(id);
 
     if (!conversation) {
       return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
