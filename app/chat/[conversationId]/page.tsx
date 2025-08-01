@@ -7,23 +7,25 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 
-export default function ChatPage({ params }) {
+interface ChatPageProps {
+  params: Promise<{ conversationId: string }>; // 👈 params is now a Promise
+}
+
+export default function ChatPage({ params }: ChatPageProps) {
+  // ✅ unwrap params
+  const unwrappedParams = React.use(params);
+  const { conversationId } = unwrappedParams;
+
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [receiverId, setReceiverId] = useState<string | null>(null);
 
-  // ✅ unwrap params correctly
-  const { conversationId } = React.use(params);
-
-  const [receiverId, setReceiverId] = useState(null);
-
-  // ✅ Redirect if not logged in
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
 
-  // ✅ Fetch conversation details
   useEffect(() => {
     if (!conversationId || !session?.user?.id) return;
 
@@ -32,14 +34,16 @@ export default function ChatPage({ params }) {
       .then((res) => {
         const conversation = res.data;
         const otherUser = conversation.participants.find(
-          (id) => id !== session.user.id
+          (id: string) => id !== session.user.id
         );
-        setReceiverId(otherUser);
+        setReceiverId(otherUser || null);
       })
       .catch((err) => console.error("Error fetching conversation", err));
   }, [conversationId, session?.user?.id]);
 
-  if (status === "loading" || !receiverId) return <p>Loading...</p>;
+  if (status === "loading" || !receiverId || !session?.user?.id) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="flex justify-center p-8">
