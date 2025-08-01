@@ -3,7 +3,7 @@ import { Divide } from 'lucide-react';
 import React from 'react'
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { Session } from 'next-auth';
 
  const page = async () => {

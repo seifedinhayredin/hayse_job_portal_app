@@ -2,7 +2,7 @@ import { connectDB } from "@/lib/db";
 import JobCollection from "@/models/jobSchema";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import User from "@/models/user";
 export async function POST(res:any) {
     const session = await getServerSession(authOptions)

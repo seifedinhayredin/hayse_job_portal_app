@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/db";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import JobCollection from "@/models/jobSchema";
 import { NextResponse } from "next/server";
 

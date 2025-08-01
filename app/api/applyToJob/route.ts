@@ -3,7 +3,7 @@ import ApplicationToJob from "@/models/applicationToJob";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import User from "@/models/user";
 
 export async function POST(req:Request) {
