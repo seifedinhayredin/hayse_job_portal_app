@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> } // ✅ updated type
+  context: { params: Promise<{ id: string }> } // params is a Promise
 ) {
   try {
     await connectDB();
 
-    const { id } = await context.params; // ✅ await params
+    const { id } = await context.params; // await params here
     const conversation = await Conversation.findById(id);
 
     if (!conversation) {
