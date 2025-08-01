@@ -92,12 +92,14 @@ export const LoadAllRegisteredUser = () => {
               </span>
 
             {/* ✅ Chat Button */}
-                      <button
-                        onClick={() => handleChat(data._id)}
-                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                      >
-                        💬 Chat
-                      </button>
+                     <button
+                    onClick={() => handleChat(data._id)}
+                    className="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition shadow-sm text-sm sm:text-base"
+                  >
+                    💬 Chat
+                  </button>
+
+
               
             </div>
           ))}

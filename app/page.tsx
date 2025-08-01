@@ -97,7 +97,7 @@ export default function Home() {
       <div className="bg-gradient-to-br from-blue-50 to-white px-4 mt-20">
         <Footer />
 
-     <LoadYourPostedJobs />
+     
     
       </div>
       

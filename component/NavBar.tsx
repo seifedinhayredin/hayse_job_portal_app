@@ -96,21 +96,29 @@ export const NavBar = () => {
         </ul>
       )}
           {/* ✅ Role-based links */}
-          {!hideAuthOptions && role === "client" && (
-            <ul className="hidden md:flex space-x-6 text-gray-700 font-medium">
-              <li>
-                <Link href="/registerjob" className="hover:text-blue-600">
-                Post Jobs
-              </Link>
-              </li>
-             <li>
-              <Link href="/showApplicants" className="hover:text-blue-600">
-                Show Applicants
-              </Link>
+         {!hideAuthOptions && role === "client" && (
+            <li className="relative group">
+              <button className="hover:text-blue-600">Jobs Actions▾</button>
+              <ul className="absolute hidden group-hover:block bg-white shadow-md rounded-md mt-2 w-40 text-left">
+                <li>
+                  <Link href="/registerjob" className="block px-4 py-2 hover:bg-gray-100">
+                    Post Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/showApplicants" className="block px-4 py-2 hover:bg-gray-100">
+                    Show Applicants
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/yourPostedJobs" className="block px-4 py-2 hover:bg-gray-100">
+                    Your Posted Jobs
+                  </Link>
+                </li>
+              </ul>
             </li>
-            </ul>
-            
           )}
+
 
           {!hideAuthOptions && role === "user" && (
             <li>
@@ -121,21 +129,25 @@ export const NavBar = () => {
           )}
 
           {/* ✅ Chat Button */}
-          {session?.user?.id && (
-            <li className="relative">
-              <Link
-                href="/chat"
-                className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition relative flex items-center"
-              >
-                💬 Chat
-                {unseenCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    {unseenCount}
-                  </span>
-                )}
-              </Link>
-            </li>
-          )}
+         {session?.user?.id && (
+  <li className="relative">
+    <Link
+      href="/chat"
+      className="flex items-center gap-2 px-2  rounded-md hover:bg-gray-100 transition"
+    >
+      <span className="text-lg">💬</span>
+      <span className="hidden sm:inline font-medium">Chat</span>
+
+      {unseenCount > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow">
+          {unseenCount}
+        </span>
+      )}
+    </Link>
+  </li>
+)}
+
+
 
           {!hideAuthOptions ? (
             <li>
@@ -209,18 +221,44 @@ export const NavBar = () => {
             </li>
           ))}
 
-          {/* ✅ Role-based buttons in Mobile Menu */}
-          {!hideAuthOptions && role === "client" && (
+           {!hideAuthOptions && (
             <li>
               <Link
-                href="/showApplicants"
+                href="/displayAllUsers"
                 onClick={toggleMenu}
                 className="hover:text-blue-600"
               >
-                Show Applications
+                Users
               </Link>
             </li>
           )}
+
+          {/* ✅ Role-based buttons in Mobile Menu */}
+         {!hideAuthOptions && role === "client" && (
+              <li>
+                <details className="cursor-pointer">
+                  <summary className="hover:text-blue-600">Jobs Actions▾</summary>
+                  <ul className="pl-4 space-y-2 mt-1">
+                    <li>
+                      <Link href="/registerjob" onClick={toggleMenu} className="hover:text-blue-600">
+                        Post Jobs
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/showApplicants" onClick={toggleMenu} className="hover:text-blue-600">
+                        Show Applicants
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/yourPostedJobs" onClick={toggleMenu} className="hover:text-blue-600">
+                        Your Jobs
+                      </Link>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            )}
+
 
           {!hideAuthOptions && role === "user" && (
             <li>
@@ -235,21 +273,24 @@ export const NavBar = () => {
           )}
 
           {session?.user?.id && (
-            <li className="relative">
-              <Link
-                href="/chat"
-                onClick={toggleMenu}
-                className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition relative flex items-center"
-              >
-                💬 Chat
-                {unseenCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    {unseenCount}
-                  </span>
-                )}
-              </Link>
-            </li>
-          )}
+  <li className="relative">
+    <Link
+      href="/chat"
+      onClick={toggleMenu}
+      className=" rounded-md hover:bg-gray-100 transition"
+    >
+      <span className="text-lg">💬</span>
+      <span className="font-medium">Chat</span>
+
+      {unseenCount > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow">
+          {unseenCount}
+        </span>
+      )}
+    </Link>
+  </li>
+)}
+
 
           {!hideAuthOptions ? (
             <li>
