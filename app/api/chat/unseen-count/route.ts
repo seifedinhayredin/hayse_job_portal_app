@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     }
 
     const client = await clientPromise;
-    const db = client.db("your_database_name"); // change to your DB name
+    const db = client.db(process.env.MONGODB_URI); // change to your DB name
 
     const count = await db.collection("messages").countDocuments({
       receiverId: userId,

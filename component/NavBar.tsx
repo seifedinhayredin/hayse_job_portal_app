@@ -115,6 +115,11 @@ export const NavBar = () => {
                     Your Posted Jobs
                   </Link>
                 </li>
+                <li>
+                  <Link href="/addQuize" className="block px-4 py-2 hover:bg-gray-100">
+                    Add Quize                  
+                    </Link>
+                </li>
               </ul>
             </li>
           )}
@@ -124,6 +129,14 @@ export const NavBar = () => {
             <li>
               <Link href="/showYourAppliedJobs" className="hover:text-blue-600">
                 Applied Jobs
+              </Link>
+            </li>
+          )}
+
+          {!hideAuthOptions && role === "user" && (
+            <li>
+              <Link href="/quiz_questions" className="hover:text-blue-600">
+                Take Quize
               </Link>
             </li>
           )}
@@ -252,6 +265,11 @@ export const NavBar = () => {
                     <li>
                       <Link href="/yourPostedJobs" onClick={toggleMenu} className="hover:text-blue-600">
                         Your Jobs
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/addQuize" onClick={toggleMenu} className="hover:text-blue-600">
+                        Add Quize
                       </Link>
                     </li>
                   </ul>

@@ -9,6 +9,8 @@ import {
 import { useState } from "react";
 import Footer from "@/component/Footer";
 import LoadYourPostedJobs from "@/component/LoadYourPostedJobs";
+import QuizeBoard from "@/component/QuizeBoard";
+import LoadQuestions from "@/component/LoadQuestions";
 
 
 
@@ -98,7 +100,7 @@ export default function Home() {
         <Footer />
 
      
-    
+    <LoadQuestions />
       </div>
       
     </>

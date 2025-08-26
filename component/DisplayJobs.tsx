@@ -2,7 +2,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import LoadJob from "./LoadJob";
-import { ToastContainer, toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
 interface Item {
@@ -20,19 +19,35 @@ interface Item {
   employerId: string;
 }
 
+interface NotificationItem {
+  jobId: { _id: string; jobname: string; employerName:string};
+  employerId: { name: string };
+}
+
 const DisplayJobs = () => {
   const [formData, setFormData] = useState({ search: "", experiance: "" });
   const [jobData, setJobData] = useState<Item[]>([]);
   const [whoPostedMap, setWhoPostedMap] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const { data: session } = useSession();
 
   const loggedInUserId = session?.user?.id;
 
-  // ✅ Fetch name of employer (user who posted)
-  const fetchEmployerName = async (employerId: string) => {
-    if (whoPostedMap[employerId]) return; // Already fetched
+  // ✅ Check for new exam notifications when employee logs in
+  const checkExamNotifications = async () => {
+    if (!session?.user) return;
+    try {
+      const res = await axios.get("/api/quiz/getQuizNotification", { withCredentials: true });
+      setNotifications(res.data.notifications || []);
+    } catch (err) {
+      console.error("Error checking exam notifications", err);
+    }
+  };
 
+  // ✅ Fetch employer name for job posting
+  const fetchEmployerName = async (employerId: string) => {
+    if (whoPostedMap[employerId]) return;
     try {
       const response = await axios.post("/api/users/fetchEmployerDetail", {
         employerId,
@@ -53,7 +68,6 @@ const DisplayJobs = () => {
       const jobs = response.data.savedJobs || [];
       setJobData(jobs);
 
-      // Fetch "who posted" for each job
       jobs.forEach((job: Item) => fetchEmployerName(job.employerId));
     } catch (err) {
       console.error("Error fetching jobs:", err);
@@ -64,6 +78,13 @@ const DisplayJobs = () => {
     fetchJobs();
   }, []);
 
+  // 🔹 Run notification check right after login/session load
+  useEffect(() => {
+    if (session?.user?.role === "user") {
+      checkExamNotifications();
+    }
+  }, [session]);
+
   // ✅ Apply to Job
   const applyJob = async (jobId: string) => {
     const confirmed = window.confirm("Are you sure you want to apply to this job?");
@@ -71,13 +92,13 @@ const DisplayJobs = () => {
 
     try {
       await axios.post("/api/applyToJob", { jobId });
-      toast.success("Successfully Applied");
+      alert("Successfully Applied");
     } catch (err) {
-      toast.error("Error when applying to Job");
+      alert("Error when applying to Job");
     }
   };
 
-  // ✅ Handle form inputs
+  // ✅ Handle form change
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -109,7 +130,27 @@ const DisplayJobs = () => {
 
   return (
     <div>
-      <ToastContainer theme="dark" />
+      {/* ✅ Persistent Notification Panel */}
+      {notifications.length > 0 && (
+        <div className="p-4 bg-yellow-100 border border-yellow-300 rounded-lg mb-4">
+          <h2 className="font-bold mb-2">📢 New Exam Notifications</h2>
+          {notifications.map((notif, index) => (
+            <div key={index} className="flex items-center justify-between mb-2">
+              <span>
+                Exam scheduled for job:{" "}
+                <strong>{notif.jobId?.jobname || "Unknown Job"}</strong> in {" "} 
+                <strong>{notif.jobId?.employerName || "Unknown Job"}</strong>
+              </span>
+              <button
+                className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={() => window.location.href = `/exam/${notif.jobId?._id}`}
+              >
+                View Exam
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ✅ Search & Filter */}
       <form
@@ -160,8 +201,8 @@ const DisplayJobs = () => {
             id={index}
             _id={job._id}
             mongoId={job._id}
-            employerName={job.employerName} // company
-            whoPosted={whoPostedMap[job.employerId] || "Loading..."} // ✅ real user name
+            employerName={job.employerName}
+            whoPosted={whoPostedMap[job.employerId] || "Loading..."}
             jobname={job.jobname}
             qualification={job.qualification}
             experiance={job.experiance}
@@ -169,10 +210,9 @@ const DisplayJobs = () => {
             address={job.address}
             description={job.description}
             deadline={job.deadline}
-            employerId = {job.employerId}
+            employerId={job.employerId}
             postedAt={job.createdAt}
             applyJob={applyJob}
-            
           />
         ))}
     </div>
