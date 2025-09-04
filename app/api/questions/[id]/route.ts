@@ -4,37 +4,29 @@ import { connectDB } from "@/lib/db";
 import { QuestionModel } from "@/models/Question";
 import { Types } from "mongoose";
 
-export async function GET(
-  req: Request,
-  context: { params: { id: string } }
-) {
-  try {
-    await connectDB();
 
-    const { id } = context.params;
+type RouteContext = {
+  params: { id: string };
+};
 
-    if (!Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
-    }
+export async function GET(req: Request, context: RouteContext) {
+  await connectDB();
 
-    const question = await QuestionModel.find({
-      _id: id,
-      status: "opened",
-    });
+  const { id } = context.params;
 
-    if (!question) {
-      return NextResponse.json({ message: "Not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(question, { status: 200 });
-  } catch (error) {
-    console.error("❌ Error fetching question:", error);
-    return NextResponse.json(
-      { message: "Failed to fetch question" },
-      { status: 500 }
-    );
+  if (!Types.ObjectId.isValid(id)) {
+    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
   }
+
+  const question = await QuestionModel.find({ _id: id, status: "opened" });
+
+  if (!question) {
+    return NextResponse.json({ message: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(question, { status: 200 });
 }
+
 
 export async function PUT(
   req: Request,
