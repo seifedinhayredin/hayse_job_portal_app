@@ -4,29 +4,38 @@ import { connectDB } from "@/lib/db";
 import { QuestionModel } from "@/models/Question";
 import { Types } from "mongoose";
 
+export async function GET(
+ 
+  req: Request, context: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
 
-type RouteContext = {
-  params: { id: string };
-};
+    //const { id } = context.params;
+    const { id } = await context.params; // ✅ Await params
 
-export async function GET(req: Request, context: RouteContext) {
-  await connectDB();
+    if (!Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+    }
 
-  const { id } = context.params;
+    const question = await QuestionModel.find({
+      _id: id,
+      status: "opened",
+    });
 
-  if (!Types.ObjectId.isValid(id)) {
-    return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
+    if (!question) {
+      return NextResponse.json({ message: "Not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(question, { status: 200 });
+  } catch (error) {
+    console.error("❌ Error fetching question:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch question" },
+      { status: 500 }
+    );
   }
-
-  const question = await QuestionModel.find({ _id: id, status: "opened" });
-
-  if (!question) {
-    return NextResponse.json({ message: "Not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(question, { status: 200 });
 }
-
 
 export async function PUT(
   req: Request,
