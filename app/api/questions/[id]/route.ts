@@ -5,7 +5,7 @@ import { QuestionModel } from "@/models/Question";
 import { Types } from "mongoose";
 
 export async function GET(
-  req: NextRequest,
+  req: Request,
   context: { params: { id: string } }
 ) {
   try {
@@ -37,7 +37,7 @@ export async function GET(
 }
 
 export async function PUT(
-  req: NextRequest,
+  req: Request,
   context: { params: { id: string } }
 ) {
   try {
@@ -60,7 +60,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: NextRequest,
+  req: Request,
   context: { params: { id: string } }
 ) {
   try {
