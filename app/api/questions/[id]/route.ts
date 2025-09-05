@@ -35,7 +35,7 @@ import { Types } from "mongoose";
       { status: 500 }
     );
   }
-}*/
+}
 
 export async function PUT(
   req: Request,
@@ -76,4 +76,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+}*/
