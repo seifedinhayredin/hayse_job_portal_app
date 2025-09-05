@@ -100,7 +100,7 @@ export default function Home() {
         <Footer />
 
      
-    <LoadQuestions />
+    
       </div>
       
     </>

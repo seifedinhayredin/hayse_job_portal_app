@@ -4,7 +4,7 @@ import { connectDB } from "@/lib/db";
 import { QuestionModel } from "@/models/Question";
 import { Types } from "mongoose";
 
-export async function GET(
+/*export async function GET(
  
   req: Request, context: { params: Promise<{ id: string }> }
 ) {
@@ -35,7 +35,7 @@ export async function GET(
       { status: 500 }
     );
   }
-}
+}*/
 
 export async function PUT(
   req: Request,
